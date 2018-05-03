@@ -50,7 +50,7 @@ config :phoenix, :stacktrace_depth, 20
 config :app, App.Repo,
   adapter: Ecto.Adapters.MySQL,
   username: "root",
-  password: "",
-  database: "app_dev",
+  password: "1Q2A3z4o",
+  database: "chat_elixir",
   hostname: "localhost",
   pool_size: 10

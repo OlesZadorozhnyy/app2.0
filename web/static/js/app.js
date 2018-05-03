@@ -1,21 +1,43 @@
-// Brunch automatically concatenates all files in your
-// watched paths. Those paths can be configured at
-// config.paths.watched in "brunch-config.js".
-//
-// However, those files will only be executed if
-// explicitly imported. The only exception are files
-// in vendor, which are never wrapped in imports and
-// therefore are always executed.
+import socket from "./socket";
+import Mustache from 'mustache';
 
-// Import dependencies
-//
-// If you no longer want to use a dependency, remember
-// to also remove its path from "config.paths.watched".
-import "phoenix_html"
+const sendMessageForm = $('#sendMessage');
+const messageTemplate = $('#message_template').html();
+const messages = $('.messages');
 
-// Import local files
-//
-// Local files can be imported directly using relative
-// paths "./socket" or full ones "web/static/js/socket".
+let channel = socket.channel("room", {});
 
-// import socket from "./socket"
+channel.join()
+	.receive("ok", resp => console.log("Joined successfully", resp))
+	.receive("error", resp => console.log("Unable to join", resp));
+
+// events
+sendMessageForm.on('submit', onSendMessage);
+channel.on('message:new', onNewMessageReceived);
+
+function onSendMessage(e) {
+	e.preventDefault();
+
+	const form = $(e.target);
+	const data = convertData($(this).serializeArray());
+
+	channel.push('message:new', data);
+	form[0].reset();
+}
+
+function onNewMessageReceived(payload) {
+	if (payload.roomId == messages.attr('data-room-id')) {
+		const message = Mustache.render(messageTemplate, { messageInfo: payload });
+		messages.append(message);
+	}
+}
+
+function convertData(items) {
+	let list = {};
+
+	items.map((item) => {
+		list[item.name] = item.value;
+	});
+
+	return list;
+}

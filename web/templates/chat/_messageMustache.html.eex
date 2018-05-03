@@ -1,0 +1,7 @@
+<div class="message">
+	<span><small>{{ messageInfo.inserted_at }}</small></span>
+
+	<span><b>({{ messageInfo.user }})</b></span>
+
+	<span>{{ messageInfo.message }}</span>
+</div>

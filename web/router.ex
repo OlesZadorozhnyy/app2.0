@@ -16,11 +16,16 @@ defmodule App.Router do
   scope "/", App do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", ChatController, :index
+
+    post "/auth", AuthController, :authenticate
+
+    get "/:roomId", ChatController, :chat
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", App do
-  #   pipe_through :api
-  # end
+  scope "/api", App do
+    pipe_through :api
+
+    post "/sendMessage", ApiController, :sendMessage
+  end
 end
