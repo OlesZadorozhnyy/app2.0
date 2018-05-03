@@ -10,8 +10,6 @@ defmodule App.ApiController do
 
 		case Repo.insert(changeset) do
 			{:ok, message} ->
-				IO.inspect message
-
 				newMessage = %{message | inserted_at: ChatView.dateTimeFormat(message.inserted_at)}
 
 				json(conn, newMessage)
